@@ -6,17 +6,6 @@ using System.Reflection;
 
 namespace Archivator
 {
-    class Coding
-    {
-        public int Number { get; set; }
-        public int Code { get; set; }
-
-        public Coding(int code, int number)
-        {
-            Code = code;
-            Number = number;
-        }
-    }
     class Program
     {
         static void Main(string[] args)
@@ -61,7 +50,7 @@ namespace Archivator
                 }
                 else
                 {
-                    output += dict[s];
+                    output += dict[s] + "\n";
                     dict[s + ch] = dict.Count;
                     s = ch.ToString();
                 }
@@ -80,27 +69,87 @@ namespace Archivator
 
             string entry;
             char decodeChar;
-            int prevcode, currcode;
+            int prevcode = 0, currcode;
             string resultDecode = "";
 
-            prevcode = decodeDict
-                .First(x => x.Value == int.Parse(output[0].ToString())).Value;
-            resultDecode += decodeDict
-                .First(x => x.Value == int.Parse(output[0].ToString())).Key;
-            output = output.Substring(1, output.Length - 1);
-            
-            foreach (var outputChar in output)
+            var decodeCodes = File.ReadAllLines(location)
+                .Select(x => int.Parse(x))
+                .ToList();
+
+            var previousCode = decodeCodes[0];
+            var firstPhrase = decodeDict
+                .First(x => x.Value == previousCode)
+                .Key;
+
+            resultDecode += firstPhrase;
+
+            for (int i = 1; i < decodeCodes.Count; i++)
             {
-                currcode = int.Parse(outputChar.ToString());
-                entry = decodeDict.First(x => x.Value == currcode).Key;
-                resultDecode += entry;
-                decodeChar = entry[0];
-                var buf = decodeDict.First(x => x.Value == prevcode).Key;
-                decodeDict[buf + decodeChar] = decodeDict.Count;
-                prevcode = currcode;
+                var currentCode = decodeCodes[i];
+
+                if (decodeDict.ContainsValue(currentCode))
+                {
+                    var currentPhrase = decodeDict
+                        .First(x => x.Value == currentCode)
+                        .Key;
+                    resultDecode += currentPhrase;
+
+                    var previousPhrase = decodeDict
+                        .First(x => x.Value == previousCode)
+                        .Key;
+
+                    decodeDict[previousPhrase + currentPhrase[0]] = decodeDict.Count;
+
+                    previousCode = currentCode;
+                }
+                else
+                {
+                    var currentPhrase = decodeDict
+                        .First(x => x.Value == previousCode)
+                        .Key;
+
+                    currentPhrase += currentPhrase[0];
+
+                    decodeDict[currentPhrase] = decodeDict.Count;
+
+                    resultDecode += currentPhrase;
+
+                    previousCode = currentCode;
+                }
+               
             }
-            
+
             Console.WriteLine($"decode result: {resultDecode}");
+        }
+
+        public static int GetCurrentCode(Dictionary<string, int> dict, string output, int index, out int shift)
+        {
+            shift = 0;
+            var prevCode = int.Parse(output[index].ToString());
+            var dictionaryContainsMoreCode = true;
+            if (prevCode == 0) return prevCode;
+            
+            
+            while (dictionaryContainsMoreCode)
+            {
+                if (output.Length == index + 1)
+                {
+                    return prevCode;
+                }
+                var nextCodeValue = int.Parse(prevCode.ToString() + output[index + 1].ToString());
+                if (dict.ContainsValue(nextCodeValue))
+                {
+                    prevCode = nextCodeValue;
+                    index++;
+                    shift++;
+                }
+                else
+                {
+                    dictionaryContainsMoreCode = false;
+                }
+            }
+
+            return prevCode;
         }
     }
 }
