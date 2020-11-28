@@ -121,35 +121,5 @@ namespace Archivator
 
             Console.WriteLine($"decode result: {resultDecode}");
         }
-
-        public static int GetCurrentCode(Dictionary<string, int> dict, string output, int index, out int shift)
-        {
-            shift = 0;
-            var prevCode = int.Parse(output[index].ToString());
-            var dictionaryContainsMoreCode = true;
-            if (prevCode == 0) return prevCode;
-            
-            
-            while (dictionaryContainsMoreCode)
-            {
-                if (output.Length == index + 1)
-                {
-                    return prevCode;
-                }
-                var nextCodeValue = int.Parse(prevCode.ToString() + output[index + 1].ToString());
-                if (dict.ContainsValue(nextCodeValue))
-                {
-                    prevCode = nextCodeValue;
-                    index++;
-                    shift++;
-                }
-                else
-                {
-                    dictionaryContainsMoreCode = false;
-                }
-            }
-
-            return prevCode;
-        }
     }
 }
