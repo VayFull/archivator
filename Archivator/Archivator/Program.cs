@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 
 namespace Archivator
@@ -20,7 +21,8 @@ namespace Archivator
     {
         static void Main(string[] args)
         {
-            var dict = new Dictionary<string, Coding>();
+            var dict = new Dictionary<string, int>();
+            var decodeDict = new Dictionary<string, int>();
             string result = "";
             /*Console.WriteLine("Введите input");
             var input = Console.ReadLine();
@@ -33,50 +35,72 @@ namespace Archivator
 
             var file = File.OpenText(readLocation);
             var inputString = file.ReadToEnd();
-            
-            foreach (var value in inputString)
+
+            var orderedInputString = inputString.OrderBy(x => x);
+
+            foreach (var value in orderedInputString)
             {
                 var currentStringValue = value.ToString();
                 if (!dict.ContainsKey(currentStringValue))
                 {
-                    dict[currentStringValue] = new Coding(dict.Count, dict.Count);
+                    dict[currentStringValue] = dict.Count;
+                    decodeDict[currentStringValue] = decodeDict.Count;
                 }
             }
-
-            string currentPhrase = "";
-            string previousPhrase = "";
             
-            for (int index = 0; index < inputString.Length; index++)
-            {
-                previousPhrase = currentPhrase;
-                currentPhrase += inputString[index].ToString();
-                
-                if (index == inputString.Length - 1)
-                {
-                    dict[currentPhrase] = new Coding(dict[previousPhrase].Number, dict.Count);
-                    result += dict[previousPhrase].Number;
-                    result += dict[inputString[index].ToString()].Code;
-                }
+            string s = "";
+            char ch;
+            string output = "";
 
-                if (!dict.ContainsKey(currentPhrase))
+            foreach (var inputChar in inputString)
+            {
+                ch = inputChar;
+                if (dict.ContainsKey(s + ch))
                 {
-                    var code = new Coding(dict[previousPhrase].Number, dict.Count);
-                    dict[currentPhrase] = code;
-                    currentPhrase = "";
-                    previousPhrase = "";
-                    index--;
-                    result += code.Code;
+                    s = s + ch;
+                }
+                else
+                {
+                    output += dict[s];
+                    dict[s + ch] = dict.Count;
+                    s = ch.ToString();
                 }
             }
+
+            output += dict[s];
 
             foreach (var keyValue in dict)
             {
-                Console.WriteLine($"key: {keyValue.Key} code: {keyValue.Value.Code} number: {keyValue.Value.Number}\n");
+                Console.WriteLine($"key: {keyValue.Key} code: {keyValue.Value}\n");
             }
 
             var writeLocation = location += "archived.txt";
-            File.WriteAllText(writeLocation, result);
+            File.WriteAllText(writeLocation, output);
             Console.WriteLine($"Result: = {result}");
+
+            string entry;
+            char decodeChar;
+            int prevcode, currcode;
+            string resultDecode = "";
+
+            prevcode = decodeDict
+                .First(x => x.Value == int.Parse(output[0].ToString())).Value;
+            resultDecode += decodeDict
+                .First(x => x.Value == int.Parse(output[0].ToString())).Key;
+            output = output.Substring(1, output.Length - 1);
+            
+            foreach (var outputChar in output)
+            {
+                currcode = int.Parse(outputChar.ToString());
+                entry = decodeDict.First(x => x.Value == currcode).Key;
+                resultDecode += entry;
+                decodeChar = entry[0];
+                var buf = decodeDict.First(x => x.Value == prevcode).Key;
+                decodeDict[buf + decodeChar] = decodeDict.Count;
+                prevcode = currcode;
+            }
+            
+            Console.WriteLine($"decode result: {resultDecode}");
         }
     }
 }
