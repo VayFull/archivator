@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -10,36 +9,41 @@ namespace Archivator
 {
     class Program
     {
+        static Dictionary<string, int> dict = new Dictionary<string, int>();
+        static Dictionary<int, string> decodeDict = new Dictionary<int, string>();
         static void Main(string[] args)
         {
-            var stopWatch = new Stopwatch();
-            stopWatch.Start();
-            var dict = new Dictionary<string, int>();
-            var decodeDict = new Dictionary<int, string>();
-            string result = "";
-            /*Console.WriteLine("Введите input");
-            var input = Console.ReadLine();
-            
-            Console.WriteLine("Введите output");
-            var output = Console.ReadLine();*/
-
             var location = Assembly
                 .GetExecutingAssembly()
                 .Location
                 .Replace("Archivator.dll", "");
-            
-            var readLocation = location + "file.txt";
 
-            var file = File
-                .OpenText(readLocation);
-            
-            var inputString = file
+            var stopWatch = new Stopwatch();
+            stopWatch.Start();
+            Compress(location + "file.txt", location + "archived.txt");
+            stopWatch.Stop();
+            System.Console.WriteLine(stopWatch.ElapsedMilliseconds);
+
+            stopWatch.Reset();
+            stopWatch.Start();
+            DeCompress(location + "archived.txt", location + "deCompressed.txt");
+            stopWatch.Stop();
+
+            System.Console.WriteLine(stopWatch.ElapsedMilliseconds);
+
+        }
+
+        public static void Compress(string fileToCompressPath, string compressedFilePath)
+        {
+            //var dict = new Dictionary<string, int>();
+            //var decodeDict = new Dictionary<int, string>();
+
+            var inputString = File
+                .OpenText(fileToCompressPath)
                 .ReadToEnd();
 
-            var orderedInputString = inputString
-                .OrderBy(x => x);
 
-            foreach (var value in orderedInputString)
+            foreach (var value in inputString)
             {
                 var currentStringValue = value.ToString();
                 if (!dict.ContainsKey(currentStringValue))
@@ -50,38 +54,34 @@ namespace Archivator
             }
 
             string s = "";
-            char ch;
+            char buffer;
             StringBuilder output = new StringBuilder();
 
             foreach (var inputChar in inputString)
             {
-                ch = inputChar;
-                if (dict.ContainsKey(s + ch))
+                buffer = inputChar;
+                if (dict.ContainsKey(s + buffer))
                 {
-                    s = s + ch;
+                    s = s + buffer;
                 }
                 else
                 {
                     output.Append(dict[s] + "\n");
-                    dict[s + ch] = dict.Count;
-                    s = ch.ToString();
+                    dict[s + buffer] = dict.Count;
+                    s = buffer.ToString();
                 }
             }
 
             output.Append(dict[s]);
 
-            var writeLocation = location += "archived.txt";
-            File.WriteAllText(writeLocation, output.ToString());
-            
-            stopWatch.Stop();
-            var compressedTime = stopWatch.ElapsedMilliseconds;
-            Console.WriteLine(compressedTime);
-            
-            stopWatch.Start();
-            
+            File.WriteAllText(compressedFilePath, output.ToString());
+        }
+
+        public static void DeCompress(string fileToDeCompressPath, string deCompressedFilePath)
+        {
             StringBuilder decodeResult = new StringBuilder();
 
-            var decodeCodes = File.ReadAllLines(location)
+            var decodeCodes = File.ReadAllLines(fileToDeCompressPath)
                 .Select(x => int.Parse(x))
                 .ToList();
 
@@ -117,11 +117,8 @@ namespace Archivator
                     previousCode = currentCode;
                 }
             }
-            
-            stopWatch.Stop();
-            var decompressedTime = stopWatch.ElapsedMilliseconds;
-            Console.WriteLine(decompressedTime);
-            //Console.WriteLine($"decode result: {resultDecode}");
+
+            File.WriteAllText(deCompressedFilePath, decodeResult.ToString());
         }
     }
 }
