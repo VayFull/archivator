@@ -1,13 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Reflection;
 using System.Text;
 
 namespace Archivator
 {
-    class Program
+    public class Program
     {
         static void Main(string[] args)
         {
