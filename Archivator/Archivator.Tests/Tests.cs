@@ -18,9 +18,12 @@ namespace Archivator.Tests
             var inputString = File
                 .OpenText(location + "/file.txt")
                 .ReadToEnd();
-            
-            Program.Compress(location + "file.txt", location + "archived.txt");
-            Program.DeCompress(location + "archived.txt", location + "deCompressed.txt");
+
+            //Program.Compress(location + "file.txt", location + "archived.txt");
+            //Program.DeCompress(location + "archived.txt", location + "deCompressed.txt");
+
+            Program.HCompress(location + "file.txt", location + "archived.txt");
+            Program.HDeCompress(location + "archived.txt", location + "deCompressed.txt");
 
             var outputString = File
                 .OpenText(location + "deCompressed.txt")
