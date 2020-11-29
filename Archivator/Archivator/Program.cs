@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 
 namespace Archivator
 {
@@ -10,8 +12,10 @@ namespace Archivator
     {
         static void Main(string[] args)
         {
+            var stopWatch = new Stopwatch();
+            stopWatch.Start();
             var dict = new Dictionary<string, int>();
-            var decodeDict = new Dictionary<string, int>();
+            var decodeDict = new Dictionary<int, string>();
             string result = "";
             /*Console.WriteLine("Введите input");
             var input = Console.ReadLine();
@@ -19,13 +23,21 @@ namespace Archivator
             Console.WriteLine("Введите output");
             var output = Console.ReadLine();*/
 
-            var location = Assembly.GetExecutingAssembly().Location.Replace("Archivator.dll", "");
+            var location = Assembly
+                .GetExecutingAssembly()
+                .Location
+                .Replace("Archivator.dll", "");
+            
             var readLocation = location + "file.txt";
 
-            var file = File.OpenText(readLocation);
-            var inputString = file.ReadToEnd();
+            var file = File
+                .OpenText(readLocation);
+            
+            var inputString = file
+                .ReadToEnd();
 
-            var orderedInputString = inputString.OrderBy(x => x);
+            var orderedInputString = inputString
+                .OrderBy(x => x);
 
             foreach (var value in orderedInputString)
             {
@@ -33,13 +45,13 @@ namespace Archivator
                 if (!dict.ContainsKey(currentStringValue))
                 {
                     dict[currentStringValue] = dict.Count;
-                    decodeDict[currentStringValue] = decodeDict.Count;
+                    decodeDict[decodeDict.Count] = currentStringValue;
                 }
             }
-            
+
             string s = "";
             char ch;
-            string output = "";
+            StringBuilder output = new StringBuilder();
 
             foreach (var inputChar in inputString)
             {
@@ -50,76 +62,66 @@ namespace Archivator
                 }
                 else
                 {
-                    output += dict[s] + "\n";
+                    output.Append(dict[s] + "\n");
                     dict[s + ch] = dict.Count;
                     s = ch.ToString();
                 }
             }
 
-            output += dict[s];
-
-            foreach (var keyValue in dict)
-            {
-                Console.WriteLine($"key: {keyValue.Key} code: {keyValue.Value}\n");
-            }
+            output.Append(dict[s]);
 
             var writeLocation = location += "archived.txt";
-            File.WriteAllText(writeLocation, output);
-            Console.WriteLine($"Result: = {result}");
-
-            string entry;
-            char decodeChar;
-            int prevcode = 0, currcode;
-            string resultDecode = "";
+            File.WriteAllText(writeLocation, output.ToString());
+            
+            stopWatch.Stop();
+            var compressedTime = stopWatch.ElapsedMilliseconds;
+            Console.WriteLine(compressedTime);
+            
+            stopWatch.Start();
+            
+            StringBuilder decodeResult = new StringBuilder();
 
             var decodeCodes = File.ReadAllLines(location)
                 .Select(x => int.Parse(x))
                 .ToList();
 
             var previousCode = decodeCodes[0];
-            var firstPhrase = decodeDict
-                .First(x => x.Value == previousCode)
-                .Key;
+            var firstPhrase = decodeDict[previousCode];
 
-            resultDecode += firstPhrase;
+            decodeResult.Append(firstPhrase);
 
             for (int i = 1; i < decodeCodes.Count; i++)
             {
                 var currentCode = decodeCodes[i];
 
-                if (decodeDict.ContainsValue(currentCode))
+                if (decodeDict.ContainsKey(currentCode))
                 {
-                    var currentPhrase = decodeDict
-                        .First(x => x.Value == currentCode)
-                        .Key;
-                    resultDecode += currentPhrase;
+                    var currentPhrase = decodeDict[currentCode];
+                    decodeResult.Append(currentPhrase);
 
-                    var previousPhrase = decodeDict
-                        .First(x => x.Value == previousCode)
-                        .Key;
-
-                    decodeDict[previousPhrase + currentPhrase[0]] = decodeDict.Count;
+                    var previousPhrase = decodeDict[previousCode];
+                    decodeDict[decodeDict.Count] = previousPhrase + currentPhrase[0];
 
                     previousCode = currentCode;
                 }
                 else
                 {
-                    var currentPhrase = decodeDict
-                        .First(x => x.Value == previousCode)
-                        .Key;
+                    var currentPhrase = decodeDict[previousCode];
 
                     currentPhrase += currentPhrase[0];
 
-                    decodeDict[currentPhrase] = decodeDict.Count;
+                    decodeDict[decodeDict.Count] = currentPhrase;
 
-                    resultDecode += currentPhrase;
+                    decodeResult.Append(currentPhrase);
 
                     previousCode = currentCode;
                 }
-               
             }
-
-            Console.WriteLine($"decode result: {resultDecode}");
+            
+            stopWatch.Stop();
+            var decompressedTime = stopWatch.ElapsedMilliseconds;
+            Console.WriteLine(decompressedTime);
+            //Console.WriteLine($"decode result: {resultDecode}");
         }
     }
 }
