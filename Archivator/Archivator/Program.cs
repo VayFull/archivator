@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -20,17 +21,16 @@ namespace Archivator
             var stopWatch = new Stopwatch();
 
             stopWatch.Start();
-            HCompress(location + "file.txt", location + "archived.q");
+            HCompress(location + "file.txt", location + "archived.txt");
             stopWatch.Stop();
             Console.WriteLine(stopWatch.ElapsedMilliseconds);
 
             stopWatch.Reset();
 
             stopWatch.Start();
-            HDeCompress(location + "archived.q", location + "deCompressed.txt");
+            HDeCompress(location + "archived.txt", location + "deCompressed.txt");
             stopWatch.Stop();
             Console.WriteLine(stopWatch.ElapsedMilliseconds);
-
 
             //stopWatch.Start();
             //Compress(location + "file.txt", location + "archived.txt");
@@ -150,7 +150,7 @@ namespace Archivator
                     currentValue.Remove(currentValue.Length - 1, 1);
             }
 
-            var compressedString = string.Join("" ,inputString.Select(x => dictionary[x]));
+            var compressedString = string.Join("", inputString.Select(x => dictionary[x]));
 
             using (FileStream fs = new FileStream(compressedFilePath, FileMode.OpenOrCreate, FileAccess.Write, FileShare.None))
             using (BinaryWriter binWriter = new BinaryWriter(fs))
@@ -158,12 +158,25 @@ namespace Archivator
                 var dictionaryLength = dictionary.Count;
 
                 binWriter.Write(dictionaryLength);
+
                 foreach (var pair in dictionary)
                 {
-                    binWriter.Write(Convert.ToInt32(pair.Value, 2));
+                    binWriter.Write(pair.Value);
                     binWriter.Write(pair.Key[0]);
                 }
-                binWriter.Write(compressedString);
+
+                var compressedBits = compressedString.Select(x => x == '1').ToList();
+
+                BitArray bitArray = new BitArray(compressedBits.ToArray());
+
+                byte[] bytes = new byte[bitArray.Length / 8 + (bitArray.Length % 8 == 0 ? 0 : 1)];
+                bitArray.CopyTo(bytes, 0);
+
+                var convertedByteString = new string(Convert.ToString(bytes.Last(), 2).Reverse().ToArray());
+                var fileEnd = convertedByteString.Length;
+
+                binWriter.Write(fileEnd);
+                binWriter.Write(bytes);
             }
         }
 
@@ -183,7 +196,24 @@ namespace Archivator
                     var symbol = binReader.ReadChar();
                     dictionary.Add(code, symbol.ToString());
                 }
-                encodedString = binReader.ReadString();
+
+                var fileEnd = binReader.ReadInt32();
+
+                var byteString = new StringBuilder();
+
+                while (binReader.BaseStream.Position < binReader.BaseStream.Length)
+                {
+                    var convertedByteString = new string(Convert.ToString(binReader.ReadByte(), 2).Reverse().ToArray());
+                    while (convertedByteString.Length != 8)
+                    {
+                        convertedByteString += "0";
+                    }
+
+
+                    byteString.Append(convertedByteString);
+                }
+
+                encodedString = byteString.Remove(byteString.Length - (8 - fileEnd), 8 - fileEnd).ToString();
             }
 
             var decodeResult = new StringBuilder();
