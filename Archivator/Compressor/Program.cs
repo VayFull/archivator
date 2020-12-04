@@ -2,6 +2,8 @@
 using Compressor.Algorithms;
 using System;
 using System.Diagnostics;
+using System.Linq;
+using System.Reflection;
 
 namespace Compressor
 {
@@ -12,7 +14,7 @@ namespace Compressor
             var stopWatch = new Stopwatch();
 
             stopWatch.Start();
-            HuffmanCompressor.Compress(Data.Location + "file.txt", Data.Location + "archived.txt");
+            HuffmanCompressor.Compress(Data.InputFilePath, Data.ArchivedFilePath);
             stopWatch.Stop();
             Console.WriteLine(stopWatch.ElapsedMilliseconds);
 

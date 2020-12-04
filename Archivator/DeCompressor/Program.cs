@@ -14,7 +14,7 @@ namespace DeCompressor
             var stopWatch = new Stopwatch();
 
             stopWatch.Start();
-            HuffmanDeCompressor.DeCompress(Data.Location + "archived.txt", Data.Location + "deCompressed.txt");
+            HuffmanDeCompressor.DeCompress(Data.ArchivedFilePath, Data.OutputFilePath);
             stopWatch.Stop();
             Console.WriteLine(stopWatch.ElapsedMilliseconds);
 
