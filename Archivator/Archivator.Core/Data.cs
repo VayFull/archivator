@@ -17,10 +17,10 @@ namespace Archivator.Core
             
             var projectPath = String.Join('\\', splitedAssemblyPath);
 
-            _location = projectPath + "\\" + _dataFolderPath;
+            Location = projectPath + "\\" + _dataFolderPath;
         }
 
-        private static string _location;
+        public static string Location;
 
         private const string _inputFile = "file.txt";
 
@@ -30,9 +30,9 @@ namespace Archivator.Core
         
         private const string _dataFolderPath = @"Archivator.Core\Data\";
 
-        public static string InputFilePath => _location + _inputFile;
-        public static string ArchivedFilePath => _location + _archivedFile;
-        public static string OutputFilePath => _location + _outputFile;
+        public static string InputFilePath => Location + _inputFile;
+        public static string ArchivedFilePath => Location + _archivedFile;
+        public static string OutputFilePath => Location + _outputFile;
         //= Assembly
         //.GetExecutingAssembly()
         //.Location
