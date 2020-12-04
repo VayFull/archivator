@@ -213,7 +213,7 @@ namespace Archivator
                     byteString.Append(convertedByteString);
                 }
 
-                encodedString = byteString.Remove(byteString.Length - (8 - fileEnd), 8 - fileEnd).ToString();
+                encodedString = byteString.Remove(byteString.Length - fileEnd, fileEnd).ToString();
             }
 
             var decodeResult = new StringBuilder();
