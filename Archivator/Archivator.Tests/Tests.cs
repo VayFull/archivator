@@ -1,5 +1,8 @@
 ﻿using System.IO;
 using System.Reflection;
+using Archivator.Core;
+using Compressor.Algorithms;
+using DeCompressor.Algorithms;
 using NUnit.Framework;
 
 namespace Archivator.Tests
@@ -9,26 +12,22 @@ namespace Archivator.Tests
         [Test]
         public void Text()
         {
-            var location = Assembly
-                .GetExecutingAssembly()
-                .Location
-                .Replace("Archivator.Tests", "Archivator")
-                .Replace("Archivator.dll", "");
+            var location = Data.Location;
 
             var inputString = File
                 .OpenText(location + "/file.txt")
                 .ReadToEnd();
 
-            //Program.Compress(location + "file.txt", location + "archived.txt");
-            //Program.DeCompress(location + "archived.txt", location + "deCompressed.txt");
+            HuffmanCompressor.Compress(location + "file.txt", location + "archived.txt");
+            HuffmanDeCompressor.DeCompress(location + "archived.txt", location + "deCompressed.txt");
 
-            Program.HCompress(location + "file.txt", location + "archived.txt");
-            Program.HDeCompress(location + "archived.txt", location + "deCompressed.txt");
+            //LZWCompressor.Compress(location + "file.txt", location + "archived.txt");
+            //LZWDeCompressor.DeCompress(location + "archived.txt", location + "deCompressed.txt");
 
             var outputString = File
                 .OpenText(location + "deCompressed.txt")
                 .ReadToEnd();
-            
+
             Assert.AreEqual(inputString, outputString);
         }
     }
