@@ -9,12 +9,12 @@ namespace Compressor.Algorithms
 {
     public static class HuffmanCompressor
     {
-        public static void Compress(string fileToCompressPath, string compressedFilePath)
+        public static void Compress(string fileToCompressPath, string compressedFilePath, List<string> inputString)
         {
-            var inputString = File
+            /*var inputString = File
                 .OpenText(fileToCompressPath)
                 .ReadToEnd()
-                .Select(x => x.ToString());
+                .Select(x => x.ToString());*/
 
             var dictionaryOfEntries = new Dictionary<string, int>();
             var tableBlocks = new List<Block>();

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 
 namespace Compressor.Algorithms
@@ -56,6 +57,10 @@ namespace Compressor.Algorithms
                 foreach (var compressedValue in outputValues)
                     binWriter.Write(compressedValue);
             }
+
+            var d = outputValues.Select(x => x.ToString()).ToList();
+            
+            HuffmanCompressor.Compress(fileToCompressPath, compressedFilePath, d);
         }
     }
 }

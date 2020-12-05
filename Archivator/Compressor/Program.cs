@@ -11,7 +11,7 @@ namespace Compressor
     {
         static void Main(string[] args)
         {
-            string inputFilePath = "";
+            /*string inputFilePath = "";
             string archivedFilePath = "";
             switch (args.Length)
             {
@@ -38,18 +38,18 @@ namespace Compressor
                 default:
                     ThrowWrongInput();
                     return;
-            }
+            }*/
 
             var stopWatch = new Stopwatch();
-            stopWatch.Start();
+            /*stopWatch.Start();
             HuffmanCompressor.Compress(Data.InputFilePath, Data.ArchivedFilePath);
+            stopWatch.Stop();
+            Console.WriteLine(stopWatch.ElapsedMilliseconds);*/
+            stopWatch.Start();
+            LZWCompressor.Compress(Data.InputFilePath, Data.ArchivedFilePath);
             stopWatch.Stop();
             Console.WriteLine(stopWatch.ElapsedMilliseconds);
             Console.ReadLine();
-            //stopWatch.Start();
-            //LZWCompressor.Compress(Data.Location + "file.txt", Data.Location + "archived.txt");
-            //stopWatch.Stop();
-            //Console.WriteLine(stopWatch.ElapsedMilliseconds);
         }
 
         public static void ThrowWrongInput()
