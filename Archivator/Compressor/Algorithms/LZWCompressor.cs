@@ -48,8 +48,7 @@ namespace Compressor.Algorithms
 
             outputValues.Add(dict[key.ToString()]);
 
-            using (FileStream fs = new FileStream(compressedFilePath, FileMode.OpenOrCreate, FileAccess.Write,
-                FileShare.None))
+            using (FileStream fs = new FileStream(compressedFilePath, FileMode.Create, FileAccess.Write, FileShare.None))
             using (BinaryWriter binWriter = new BinaryWriter(fs))
             {
                 binWriter.Write(dictionary.ToString());

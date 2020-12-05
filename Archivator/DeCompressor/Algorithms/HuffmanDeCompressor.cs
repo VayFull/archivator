@@ -25,7 +25,7 @@ namespace DeCompressor.Algorithms
                     dictionary.Add(code, symbol.ToString());
                 }
 
-                var fileEnd = binReader.ReadInt32();
+                var trashBitsCount = binReader.ReadInt32();
 
                 var byteString = new StringBuilder();
 
@@ -42,7 +42,7 @@ namespace DeCompressor.Algorithms
                     byteString.Append(convertedByteString);
                 }
 
-                encodedString = byteString.Remove(byteString.Length - fileEnd, fileEnd).ToString();
+                encodedString = byteString.Remove(byteString.Length - trashBitsCount, trashBitsCount).ToString();
             }
 
             var decodeResult = new StringBuilder();

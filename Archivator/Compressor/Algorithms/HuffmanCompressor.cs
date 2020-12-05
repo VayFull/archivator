@@ -91,7 +91,7 @@ namespace Compressor.Algorithms
 
             var compressedString = string.Join("", inputString.Select(x => dictionary[x]));
 
-            using (FileStream fs = new FileStream(compressedFilePath, FileMode.OpenOrCreate, FileAccess.Write, FileShare.None))
+            using (FileStream fs = new FileStream(compressedFilePath, FileMode.Create, FileAccess.Write, FileShare.None))
             using (BinaryWriter binWriter = new BinaryWriter(fs))
             {
                 var dictionaryLength = dictionary.Count;
@@ -104,6 +104,14 @@ namespace Compressor.Algorithms
                     binWriter.Write(pair.Key[0]);
                 }
 
+                var trashBitsCount = 8 - compressedString.Length % 8;
+                var compressedStringBuilder = new StringBuilder(compressedString);
+
+                for (int i = 0; i < trashBitsCount; i++)
+                {
+                    compressedStringBuilder.Append("0");
+                }
+
                 var compressedBits = compressedString.Select(x => x == '1').ToList();
 
                 BitArray bitArray = new BitArray(compressedBits.ToArray());
@@ -111,10 +119,7 @@ namespace Compressor.Algorithms
                 byte[] bytes = new byte[bitArray.Length / 8 + (bitArray.Length % 8 == 0 ? 0 : 1)];
                 bitArray.CopyTo(bytes, 0);
 
-                var convertedByteString = new string(Convert.ToString(bytes.Last(), 2).Reverse().ToArray());
-                var fileEnd = convertedByteString.Length;
-
-                binWriter.Write(fileEnd);
+                binWriter.Write(trashBitsCount);
                 binWriter.Write(bytes);
             }
 
