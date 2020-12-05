@@ -109,7 +109,11 @@ namespace Compressor.Algorithms
                     binWriter.Write(pair.Key[0]);
                 }
 
-                var trashBitsCount = 8 - compressedString.Length % 8;
+                int trashBitsCount = 0;
+                var shift = compressedString.Length % 8;
+                if (shift != 0)
+                    trashBitsCount = 8 - shift;
+
                 var compressedStringBuilder = new StringBuilder(compressedString);
 
                 for (int i = 0; i < trashBitsCount; i++)
