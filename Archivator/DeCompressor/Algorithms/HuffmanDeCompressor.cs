@@ -11,7 +11,7 @@ namespace DeCompressor.Algorithms
         public static void DeCompress(string fileToDeCompressPath, string deCompressedFilePath)
         {
             var dictionary = new Dictionary<string, string>(); //Код - символ
-            string encodedString;
+            string encodedString = string.Empty;
 
             using (FileStream fs = new FileStream(fileToDeCompressPath, FileMode.Open, FileAccess.Read, FileShare.Read))
             using (BinaryReader binReader = new BinaryReader(fs))
@@ -42,7 +42,8 @@ namespace DeCompressor.Algorithms
                     byteString.Append(convertedByteString);
                 }
 
-                encodedString = byteString.Remove(byteString.Length - trashBitsCount, trashBitsCount).ToString();
+                if (byteString.Length != 0)
+                    encodedString = byteString.Remove(byteString.Length - trashBitsCount, trashBitsCount).ToString();
             }
 
             var decodeResult = new StringBuilder();

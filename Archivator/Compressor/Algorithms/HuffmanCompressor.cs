@@ -36,29 +36,34 @@ namespace Compressor.Algorithms
                 .OrderByDescending(x => x.Frequency)
                 .ToList();
 
-            while (true)
-            {
-                var block1 = tableBlocks
-                    .Last(x => !x.Blocked);
-                var block2 = tableBlocks
-                    .Last(x => !x.Blocked && x != block1);
+            if (tableBlocks.Count > 1)
+                while (true)
+                {
+                    var block1 = tableBlocks
+                        .Last(x => !x.Blocked);
+                    var block2 = tableBlocks
+                        .Last(x => !x.Blocked && x != block1);
 
-                tableBlocks.Add(new Block(block1, block2));
+                    tableBlocks.Add(new Block(block1, block2));
 
-                block1.Blocked = true;
-                block2.Blocked = true;
+                    block1.Blocked = true;
+                    block2.Blocked = true;
 
-                tableBlocks = tableBlocks
-                    .OrderByDescending(x => x.Frequency)
-                    .ToList();
+                    tableBlocks = tableBlocks
+                        .OrderByDescending(x => x.Frequency)
+                        .ToList();
 
-                if (block1.Frequency + block2.Frequency >= inputLength)
-                    break;
-            }
+                    if (block1.Frequency + block2.Frequency >= inputLength)
+                        break;
+                }
 
             var dictionary = new Dictionary<string, string>(); //Символ - код
 
-            GoDown(tableBlocks.First(), new StringBuilder());
+            if (tableBlocks.Count != 0)
+                if (tableBlocks.Count == 1)
+                    dictionary.Add(tableBlocks.First().Symbol, "0");
+                else
+                    GoDown(tableBlocks.First(), new StringBuilder());
 
             void GoDown(Block block, StringBuilder currentValue)
             {
