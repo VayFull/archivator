@@ -1,5 +1,4 @@
-﻿using Archivator.Core;
-using DeCompressor.Algorithms;
+﻿using DeCompressor.Algorithms;
 using System;
 
 namespace DeCompressor
@@ -8,8 +7,9 @@ namespace DeCompressor
     {
         static void Main(string[] args)
         {
-            string inputFilePath = "";
-            string archivedFilePath = "";
+            //Часть ниже отвечает за обработку входных параметров
+            string inputFilePath = string.Empty;
+            string archivedFilePath = string.Empty;
             switch (args.Length)
             {
                 case 2:
@@ -36,10 +36,13 @@ namespace DeCompressor
                     ThrowWrongInput();
                     return;
             }
-
-            HuffmanDeCompressor.DeCompress(Data.ArchivedFilePath, Data.OutputFilePath);
+            
+            HuffmanDeCompressor.DeCompress(inputFilePath, archivedFilePath); //запуска huffman алгоритма для декомпрессии
         }
 
+        /// <summary>
+        /// Метод для вывода ошибок при неверных входных данных
+        /// </summary>
         public static void ThrowWrongInput()
         {
             Console.WriteLine("Введите аргументы в виде: -i путь до файла со сжатым содержимым " +

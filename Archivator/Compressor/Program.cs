@@ -1,5 +1,4 @@
-﻿using Archivator.Core;
-using Compressor.Algorithms;
+﻿using Compressor.Algorithms;
 using System;
 
 namespace Compressor
@@ -8,8 +7,9 @@ namespace Compressor
     {
         static void Main(string[] args)
         {
-            string inputFilePath = "";
-            string archivedFilePath = "";
+            //Часть ниже отвечает за обработку входных параметров
+            string inputFilePath = string.Empty;
+            string archivedFilePath = string.Empty;
             switch (args.Length)
             {
                 case 2:
@@ -36,10 +36,13 @@ namespace Compressor
                     ThrowWrongInput();
                     return;
             }
-
-            LZWCompressor.Compress(Data.InputFilePath, Data.ArchivedFilePath);
+            
+            LZWCompressor.Compress(inputFilePath, archivedFilePath);  //запуск lzw алгоритма компрессии
         }
 
+        /// <summary>
+        /// Метод для вывода ошибок при неверных входных данных
+        /// </summary>
         public static void ThrowWrongInput()
         {
             Console.WriteLine("Введите аргументы в виде: -i путь к файлу с содержимым в виде текста " +
