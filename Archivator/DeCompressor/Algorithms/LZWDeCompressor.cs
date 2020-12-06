@@ -12,7 +12,6 @@ namespace DeCompressor.Algorithms
             StringBuilder decodeResult = new StringBuilder();
             int[] decodeCodes;
 
-
             var encodedResult = huffmanResult.Split(' ');
 
             foreach (var value in lzwDict)
