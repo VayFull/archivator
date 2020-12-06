@@ -10,14 +10,15 @@ namespace Compressor.Algorithms
         public static void Compress(string fileToCompressPath, string compressedFilePath)
         {
             var dict = new Dictionary<string, int>();
-
             var inputString = File
                 .OpenText(fileToCompressPath)
                 .ReadToEnd();
 
+            var distinctedInputString = inputString.Distinct();
+
             StringBuilder dictionary = new StringBuilder();
 
-            foreach (var value in inputString)
+            foreach (var value in distinctedInputString)
             {
                 var currentStringValue = value.ToString();
                 if (!dict.ContainsKey(currentStringValue))
@@ -28,42 +29,40 @@ namespace Compressor.Algorithms
             }
 
             var key = new StringBuilder();
-            char buffer;
 
             var outputValues = new List<int>();
 
             foreach (var inputChar in inputString)
             {
-                buffer = inputChar;
-                if (dict.ContainsKey(key.ToString() + buffer))
+                var keyToString = key.ToString();
+                var newKey = keyToString + inputChar;
+                if (dict.ContainsKey(newKey))
                 {
-                    key.Append(buffer);
+                    key.Append(inputChar);
                 }
                 else
                 {
-                    outputValues.Add(dict[key.ToString()]);
-                    dict[key.ToString() + buffer] = dict.Count;
-                    key = new StringBuilder(buffer.ToString());
+                    outputValues.Add(dict[keyToString]);
+                    dict[newKey] = dict.Count;
+                    key = key
+                        .Clear()
+                        .Append(inputChar);
                 }
             }
 
             outputValues.Add(dict[key.ToString()]);
-
-            //using (FileStream fs = new FileStream(compressedFilePath, FileMode.Create, FileAccess.Write, FileShare.None))
-            //using (BinaryWriter binWriter = new BinaryWriter(fs))
-            //{
-            //    binWriter.Write(dictionary.ToString());
-            //    binWriter.Write(outputValues.Count);
-            //    foreach (var compressedValue in outputValues)
-            //        binWriter.Write(compressedValue);
-            //}
 
             var hufInput = new StringBuilder();
             hufInput.Append(outputValues.Count);
             hufInput.Append(" ");
             hufInput.Append(string.Join(" ", outputValues));
 
-            HuffmanCompressor.Compress(compressedFilePath, hufInput.ToString().Select(x => x.ToString()).ToList(), dictionary.ToString());
+            HuffmanCompressor.Compress(compressedFilePath, hufInput
+                .ToString()
+                .Select(x => x.ToString())
+                .ToList(),
+                    dictionary
+                    .ToString());
         }
     }
 }
