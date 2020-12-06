@@ -7,9 +7,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Archivator.Tests", "Archiva
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DeCompressor", "DeCompressor\DeCompressor.csproj", "{9D92D39A-9ED4-40BF-AD1C-8FB4B51D59F1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Archivator.Core", "Archivator.Core\Archivator.Core.csproj", "{4539B882-A361-4AD0-A32A-3FA0AE4CCE31}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Archivator.Core", "Archivator.Core\Archivator.Core.csproj", "{4539B882-A361-4AD0-A32A-3FA0AE4CCE31}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Compressor", "Compressor\Compressor.csproj", "{90850E20-B5BA-45B7-B240-1FB6999D0DE9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Compressor", "Compressor\Compressor.csproj", "{90850E20-B5BA-45B7-B240-1FB6999D0DE9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CompressorFW", "CompressorFW\CompressorFW.csproj", "{D42B714D-4D62-4809-8707-940AD6FBD600}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DeCompressorFW", "DeCompressorFW\DeCompressorFW.csproj", "{8868783C-3B12-47E1-9C47-DC48523FAA89}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +37,14 @@ Global
 		{90850E20-B5BA-45B7-B240-1FB6999D0DE9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{90850E20-B5BA-45B7-B240-1FB6999D0DE9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{90850E20-B5BA-45B7-B240-1FB6999D0DE9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D42B714D-4D62-4809-8707-940AD6FBD600}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D42B714D-4D62-4809-8707-940AD6FBD600}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D42B714D-4D62-4809-8707-940AD6FBD600}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D42B714D-4D62-4809-8707-940AD6FBD600}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8868783C-3B12-47E1-9C47-DC48523FAA89}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8868783C-3B12-47E1-9C47-DC48523FAA89}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8868783C-3B12-47E1-9C47-DC48523FAA89}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8868783C-3B12-47E1-9C47-DC48523FAA89}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
