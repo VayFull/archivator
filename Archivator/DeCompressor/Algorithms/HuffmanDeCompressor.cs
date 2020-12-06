@@ -31,9 +31,13 @@ namespace DeCompressor.Algorithms
 
                 var byteString = new StringBuilder();
 
-                while (binReader.BaseStream.Position < binReader.BaseStream.Length)
+
+                var bytesArray = binReader.ReadBytes((int)(binReader.BaseStream.Length - binReader.BaseStream.Position));
+
+
+                foreach (var oneByte in bytesArray)
                 {
-                    var convertedByteString = new StringBuilder(new string(Convert.ToString(binReader.ReadByte(), 2).Reverse().ToArray()));
+                    var convertedByteString = new StringBuilder(new string(Convert.ToString(oneByte, 2).Reverse().ToArray()));
 
                     while (convertedByteString.Length != 8)
                     {
@@ -43,6 +47,7 @@ namespace DeCompressor.Algorithms
 
                     byteString.Append(convertedByteString);
                 }
+
 
                 if (byteString.Length != 0)
                     encodedString = byteString.Remove(byteString.Length - trashBitsCount, trashBitsCount).ToString();
