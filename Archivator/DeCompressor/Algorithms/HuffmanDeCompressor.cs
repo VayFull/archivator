@@ -6,16 +6,19 @@ using System.Text;
 
 namespace DeCompressor.Algorithms
 {
+    /// <summary>
+    /// Класс, считывающий значения с файла и декодирующий значения с помощью алгоритма Хаффмана
+    /// </summary>
     public static class HuffmanDeCompressor
     {
         public static void DeCompress(string fileToDeCompressPath, string deCompressedFilePath)
         {
-            var dictionary = new Dictionary<string, char>();
+            var dictionary = new Dictionary<string, char>(); // Инициализация словаря для декодирования
             string encodedString = string.Empty;
             string lzwDict;
 
             using (FileStream fs = new FileStream(fileToDeCompressPath, FileMode.Open, FileAccess.Read, FileShare.Read))
-            using (BinaryReader binReader = new BinaryReader(fs))
+            using (BinaryReader binReader = new BinaryReader(fs)) // Чтение данных с файла
             {
                 lzwDict = binReader.ReadString();
                 int quantity = binReader.ReadInt32();
@@ -33,7 +36,7 @@ namespace DeCompressor.Algorithms
 
                 var bytesArray = binReader.ReadBytes((int)(binReader.BaseStream.Length - binReader.BaseStream.Position));
 
-                foreach (var oneByte in bytesArray)
+                foreach (var oneByte in bytesArray) // Формирование строки для декодирования из массива байт
                 {
                     var convertedByteString = new StringBuilder(new string(Convert.ToString(oneByte, 2).Reverse().ToArray()));
 
@@ -48,10 +51,10 @@ namespace DeCompressor.Algorithms
                     encodedString = byteString.Remove(byteString.Length - trashBitsCount, trashBitsCount).ToString();
             }
 
-            var decodeResult = new StringBuilder();
+            var decodeResult = new StringBuilder(); // Словарь, для записи результата декодирования
             var buffer = new StringBuilder();
 
-            foreach (var item in encodedString)
+            foreach (var item in encodedString) // Декодирование с помощью словаря
             {
                 buffer.Append(item);
 
@@ -64,7 +67,7 @@ namespace DeCompressor.Algorithms
                 }
             }
 
-            LZWDeCompressor.DeCompress(deCompressedFilePath, decodeResult.ToString(), lzwDict);
+            LZWDeCompressor.DeCompress(deCompressedFilePath, decodeResult.ToString(), lzwDict); // Запуск декодирования LZW
         }
     }
 }

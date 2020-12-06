@@ -6,16 +6,19 @@ using System.Text;
 
 namespace Compressor.Algorithms
 {
+    /// <summary>
+    /// Класс, кодирующий входные значения с помощью алгоритма Хаффмана
+    /// </summary>
     public static class HuffmanCompressor
     {
         public static void Compress(string compressedFilePath, List<string> inputString, string lzwDict)
         {
-            var dictionaryOfEntries = new Dictionary<string, int>();
-            var tableBlocks = new List<Block>();
+            var dictionaryOfEntries = new Dictionary<string, int>(); // Инициализация словаря частот
+            var tableBlocks = new List<Block>(); // Инициализация List для хранения дерева кодирования Хаффмана
 
             var inputLength = inputString.Count();
 
-            foreach (var value in inputString)
+            foreach (var value in inputString) // Заполнение словаря частот
             {
                 if (!dictionaryOfEntries.ContainsKey(value))
                     dictionaryOfEntries.Add(value, 1);
@@ -23,7 +26,7 @@ namespace Compressor.Algorithms
                     dictionaryOfEntries[value] += 1;
             }
 
-            foreach (var item in dictionaryOfEntries)
+            foreach (var item in dictionaryOfEntries) // Заполнениие дерева кодирования первоначальными значениями
                 tableBlocks.Add(new Block(item.Key, item.Value));
 
             tableBlocks = tableBlocks
@@ -31,7 +34,7 @@ namespace Compressor.Algorithms
                 .ToList();
 
             if (tableBlocks.Count > 1)
-                while (true)
+                while (true) // Заполнениие дерева кодирования
                 {
                     var block1 = tableBlocks
                         .Last(x => !x.Blocked);
@@ -40,14 +43,14 @@ namespace Compressor.Algorithms
 
                     tableBlocks.Add(new Block(block1, block2));
 
-                    block1.Blocked = true;
-                    block2.Blocked = true;
+                    block1.Blocked = true; // Использванные узлы помечаются как заблокированные
+                    block2.Blocked = true; // 
 
                     tableBlocks = tableBlocks
                         .OrderByDescending(x => x.Frequency)
                         .ToList();
 
-                    if (block1.Frequency + block2.Frequency >= inputLength)
+                    if (block1.Frequency + block2.Frequency >= inputLength) // Выход из цикла
                         break;
                 }
 
@@ -59,7 +62,7 @@ namespace Compressor.Algorithms
                 else
                     GoDown(tableBlocks.First(), new StringBuilder());
 
-            void GoDown(Block block, StringBuilder currentValue)
+            void GoDown(Block block, StringBuilder currentValue) // Рекурсивный проход по дереву для вычисления значений
             {
                 var block1 = block.Block1;
                 var block2 = block.Block2;
@@ -90,10 +93,10 @@ namespace Compressor.Algorithms
                     currentValue.Remove(currentValue.Length - 1, 1);
             }
 
-            var compressedString = string.Join("", inputString.Select(x => dictionary[x]));
+            var compressedString = string.Join("", inputString.Select(x => dictionary[x])); // Формирование результата кодирования
 
             using (FileStream fs = new FileStream(compressedFilePath, FileMode.Create, FileAccess.Write, FileShare.None))
-            using (BinaryWriter binWriter = new BinaryWriter(fs))
+            using (BinaryWriter binWriter = new BinaryWriter(fs)) // Сохранение результатов
             {
                 var dictionaryLength = dictionary.Count;
 
