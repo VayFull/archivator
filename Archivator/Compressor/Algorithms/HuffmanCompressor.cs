@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -35,9 +33,6 @@ namespace Compressor.Algorithms
             if (tableBlocks.Count > 1)
                 while (true)
                 {
-                    var a = new Stopwatch();
-                    a.Start();
-
                     var block1 = tableBlocks
                         .Last(x => !x.Blocked);
                     var block2 = tableBlocks
@@ -51,10 +46,6 @@ namespace Compressor.Algorithms
                     tableBlocks = tableBlocks
                         .OrderByDescending(x => x.Frequency)
                         .ToList();
-
-                    a.Stop();
-                    Console.WriteLine($"{a.ElapsedMilliseconds}         {tableBlocks.Count()}");
-                    a.Reset();
 
                     if (block1.Frequency + block2.Frequency >= inputLength)
                         break;
@@ -73,9 +64,11 @@ namespace Compressor.Algorithms
                 var block1 = block.Block1;
                 var block2 = block.Block2;
 
+                var currentValueToString = currentValue.ToString();
+
                 if (block1.Symbol != null)
                 {
-                    dictionary.Add(block1.Symbol, currentValue.ToString() + "0");
+                    dictionary.Add(block1.Symbol, currentValueToString + "0");
                 }
                 else
                 {
@@ -85,7 +78,7 @@ namespace Compressor.Algorithms
 
                 if (block2.Symbol != null)
                 {
-                    dictionary.Add(block2.Symbol, currentValue.ToString() + "1");
+                    dictionary.Add(block2.Symbol, currentValueToString + "1");
                 }
                 else
                 {
@@ -125,11 +118,12 @@ namespace Compressor.Algorithms
                     compressedStringBuilder.Append("0");
                 }
 
-                var compressedBits = compressedString.Select(x => x == '1').ToList();
+                var compressedBits = compressedString
+                    .Select(x => x == '1');
 
                 BitArray bitArray = new BitArray(compressedBits.ToArray());
 
-                byte[] bytes = new byte[bitArray.Length / 8 + (bitArray.Length % 8 == 0 ? 0 : 1)];
+                var bytes = new byte[bitArray.Length / 8 + (bitArray.Length % 8 == 0 ? 0 : 1)];
                 bitArray.CopyTo(bytes, 0);
 
                 binWriter.Write(trashBitsCount);
