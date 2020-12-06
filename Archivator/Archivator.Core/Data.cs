@@ -3,6 +3,10 @@ using System.Reflection;
 
 namespace Archivator.Core
 {
+    /// <summary>
+    /// Используется только для тестов. Нужен для удобной работы с файлами. Здесь раасположены названия файлов с изначальным файлом для тестов,
+    /// название файла для архивированной версии и тп.
+    /// </summary>
     public static class Data
     {
         static Data()
