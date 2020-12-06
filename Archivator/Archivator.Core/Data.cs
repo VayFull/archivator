@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Reflection;
 
 namespace Archivator.Core
@@ -14,8 +13,8 @@ namespace Archivator.Core
                 .Split('\\')
                 .SkipLast(5)
                 .ToArray();
-            
-            var projectPath = String.Join('\\', splitedAssemblyPath);
+
+            var projectPath = string.Join('\\', splitedAssemblyPath);
 
             Location = projectPath + "\\" + _dataFolderPath;
         }
@@ -27,15 +26,13 @@ namespace Archivator.Core
         private const string _archivedFile = "archived.txt";
 
         private const string _outputFile = "deCompressed.txt";
-        
+
         private const string _dataFolderPath = @"Archivator.Core\Data\";
 
         public static string InputFilePath => Location + _inputFile;
+
         public static string ArchivedFilePath => Location + _archivedFile;
+
         public static string OutputFilePath => Location + _outputFile;
-        //= Assembly
-        //.GetExecutingAssembly()
-        //.Location
-        //.Replace("Archivator.dll", "");
     }
 }

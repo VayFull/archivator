@@ -1,10 +1,10 @@
-﻿using System;
-using System.IO;
-using System.Text;
-using Archivator.Core;
+﻿using Archivator.Core;
 using Compressor.Algorithms;
 using DeCompressor.Algorithms;
 using NUnit.Framework;
+using System;
+using System.IO;
+using System.Text;
 
 namespace Archivator.Tests
 {
@@ -21,17 +21,17 @@ namespace Archivator.Tests
             _archivedFilePath = Data.ArchivedFilePath;
             _outputFilePath = Data.OutputFilePath;
         }
-        
+
         [Test]
         public void AlgorithmsTest()
         {
             LZWCompressor.Compress(_inputFilePath, _archivedFilePath);
             HuffmanDeCompressor.DeCompress(_archivedFilePath, _outputFilePath);
             CompareFiles();
-            
+
             HuffmanTestWithDifferentFilesLength(25);
         }
-        
+
         private void HuffmanTestWithDifferentFilesLength(int count)
         {
             for (int i = 1; i < count; i++)
@@ -45,20 +45,20 @@ namespace Archivator.Tests
             var inputString = File
                 .OpenText(_inputFilePath)
                 .ReadToEnd();
-            
+
             var outputString = File
                 .OpenText(_outputFilePath)
                 .ReadToEnd();
 
             Assert.AreEqual(inputString, outputString);
         }
-        
+
         private void CompareFiles(string inputFilePath, string outputFilePath)
         {
             var inputString = File
                 .OpenText(inputFilePath)
                 .ReadToEnd();
-            
+
             var outputString = File
                 .OpenText(outputFilePath)
                 .ReadToEnd();
@@ -72,7 +72,7 @@ namespace Archivator.Tests
             var newFileLocation = Data.Location + count;
             var newOutputFileLocation = newFileLocation + "out";
             File.WriteAllText(Data.Location + count, str);
-            
+
             LZWCompressor.Compress(newFileLocation, _archivedFilePath);
             HuffmanDeCompressor.DeCompress(_archivedFilePath, newOutputFileLocation);
             CompareFiles(newFileLocation, newOutputFileLocation);
@@ -82,7 +82,7 @@ namespace Archivator.Tests
         {
             var result = new StringBuilder();
             var rnd = new Random();
-            
+
             for (int i = 0; i < count; i++)
             {
                 result.Append(rnd.Next(0, 10));

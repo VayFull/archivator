@@ -51,7 +51,7 @@ namespace Compressor.Algorithms
                         break;
                 }
 
-            var dictionary = new Dictionary<string, string>(); //Символ - код
+            var dictionary = new Dictionary<string, string>();
 
             if (tableBlocks.Count != 0)
                 if (tableBlocks.Count == 1)
@@ -97,7 +97,7 @@ namespace Compressor.Algorithms
             {
                 var dictionaryLength = dictionary.Count;
 
-                binWriter.Write(lzwDict); //lzw
+                binWriter.Write(lzwDict);
                 binWriter.Write(dictionaryLength);
 
                 foreach (var pair in dictionary)

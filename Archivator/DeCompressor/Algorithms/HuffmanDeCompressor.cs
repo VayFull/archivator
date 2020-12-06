@@ -10,7 +10,7 @@ namespace DeCompressor.Algorithms
     {
         public static void DeCompress(string fileToDeCompressPath, string deCompressedFilePath)
         {
-            var dictionary = new Dictionary<string, char>(); //Код - символ
+            var dictionary = new Dictionary<string, char>();
             string encodedString = string.Empty;
             string lzwDict;
 
