@@ -13,10 +13,11 @@ namespace Compressor.Algorithms
         public static void Compress(string fileToCompressPath, string compressedFilePath, List<string> inpud)
         {
             var inputString = inpud;
-                //File
-                //.OpenText(fileToCompressPath)
-                //.ReadToEnd()
-                //.Select(x => x.ToString());
+                /*string.Join(" ", inpud).Select(x => x.ToString());*/
+            //File
+            //.OpenText(fileToCompressPath)
+            //.ReadToEnd()
+            //.Select(x => x.ToString());
 
             var dictionaryOfEntries = new Dictionary<string, int>();
             var tableBlocks = new List<Block>();
@@ -34,14 +35,6 @@ namespace Compressor.Algorithms
             foreach (var item in dictionaryOfEntries)
                 tableBlocks.Add(new Block(item.Key, item.Value));
 
-            var newTableBlocks = new List<Block>();
-            foreach (var item in tableBlocks)
-            {
-                if (item.Frequency > 3)
-                {
-                    newTableBlocks.Add(item);
-                }
-            }
 
             tableBlocks = tableBlocks
                 .OrderByDescending(x => x.Frequency)
@@ -52,7 +45,6 @@ namespace Compressor.Algorithms
                 {
                     var a = new Stopwatch();
                     a.Start();
-
 
                     var block1 = tableBlocks
                         .Last(x => !x.Blocked);

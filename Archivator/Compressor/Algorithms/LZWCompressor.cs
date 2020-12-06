@@ -60,7 +60,7 @@ namespace Compressor.Algorithms
 
             var hufInput = outputValues.Select(x => x.ToString()).ToList();
 
-            HuffmanCompressor.Compress(fileToCompressPath, compressedFilePath, hufInput);
+            HuffmanCompressor.Compress(fileToCompressPath, compressedFilePath, inputString.Select(x => x.ToString()).ToList());
         }
     }
 }
