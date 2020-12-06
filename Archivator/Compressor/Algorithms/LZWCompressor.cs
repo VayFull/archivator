@@ -58,9 +58,12 @@ namespace Compressor.Algorithms
             //        binWriter.Write(compressedValue);
             //}
 
-            var hufInput = outputValues.Select(x => x.ToString()).ToList();
+            var hufInput = new StringBuilder();
+            hufInput.Append(outputValues.Count);
+            hufInput.Append(" ");
+            hufInput.Append(string.Join(" ", outputValues));
 
-            HuffmanCompressor.Compress(fileToCompressPath, compressedFilePath, inputString.Select(x => x.ToString()).ToList());
+            HuffmanCompressor.Compress(compressedFilePath, hufInput.ToString().Select(x => x.ToString()).ToList(), dictionary.ToString());
         }
     }
 }

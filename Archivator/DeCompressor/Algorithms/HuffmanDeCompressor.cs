@@ -12,10 +12,12 @@ namespace DeCompressor.Algorithms
         {
             var dictionary = new Dictionary<string, string>(); //Код - символ
             string encodedString = string.Empty;
+            string lzwDict;
 
             using (FileStream fs = new FileStream(fileToDeCompressPath, FileMode.Open, FileAccess.Read, FileShare.Read))
             using (BinaryReader binReader = new BinaryReader(fs))
             {
+                lzwDict = binReader.ReadString();
                 int quantity = binReader.ReadInt32();
 
                 for (int i = 0; i < quantity; i++)
@@ -31,11 +33,11 @@ namespace DeCompressor.Algorithms
 
                 while (binReader.BaseStream.Position < binReader.BaseStream.Length)
                 {
-                    var convertedByteString = new string(Convert.ToString(binReader.ReadByte(), 2).Reverse().ToArray());
+                    var convertedByteString = new StringBuilder(new string(Convert.ToString(binReader.ReadByte(), 2).Reverse().ToArray()));
 
                     while (convertedByteString.Length != 8)
                     {
-                        convertedByteString += "0";
+                        convertedByteString.Append("0");
                     }
 
 
@@ -60,7 +62,12 @@ namespace DeCompressor.Algorithms
                 }
             }
 
-            File.WriteAllText(deCompressedFilePath, decodeResult.ToString());
+
+            //File.WriteAllText(deCompressedFilePath, decodeResult.ToString());
+
+
+            LZWDeCompressor.DeCompress(deCompressedFilePath, decodeResult.ToString(), lzwDict);
+
         }
     }
 }

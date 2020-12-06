@@ -6,25 +6,24 @@ namespace DeCompressor.Algorithms
 {
     public static class LZWDeCompressor
     {
-        public static void DeCompress(string fileToDeCompressPath, string deCompressedFilePath)
+        public static void DeCompress(string deCompressedFilePath, string huffmanResult, string lzwDict)
         {
             var decodeDict = new Dictionary<int, string>();
             StringBuilder decodeResult = new StringBuilder();
             int[] decodeCodes;
 
-            using (FileStream fs = new FileStream(fileToDeCompressPath, FileMode.Open, FileAccess.Read, FileShare.Read))
-            using (BinaryReader binReader = new BinaryReader(fs))
-            {
-                foreach (var value in binReader.ReadString())
-                    decodeDict[decodeDict.Count] = value.ToString();
 
-                int quantity = binReader.ReadInt32();
+            var encodedResult = huffmanResult.Split(' ');
 
-                decodeCodes = new int[quantity];
+            foreach (var value in lzwDict)
+                decodeDict[decodeDict.Count] = value.ToString();
 
-                for (int i = 0; i < quantity; i++)
-                    decodeCodes[i] = binReader.ReadInt32();
-            }
+            int quantity = int.Parse(encodedResult[0]);
+
+            decodeCodes = new int[quantity];
+
+            for (int i = 1; i < encodedResult.Length; i++)
+                decodeCodes[i - 1] = int.Parse(encodedResult[i]);
 
             var previousCode = decodeCodes[0];
             var firstPhrase = decodeDict[previousCode];

@@ -10,15 +10,8 @@ namespace Compressor.Algorithms
 {
     public static class HuffmanCompressor
     {
-        public static void Compress(string fileToCompressPath, string compressedFilePath, List<string> inpud)
+        public static void Compress(string compressedFilePath, List<string> inputString, string lzwDict)
         {
-            var inputString = inpud;
-                /*string.Join(" ", inpud).Select(x => x.ToString());*/
-            //File
-            //.OpenText(fileToCompressPath)
-            //.ReadToEnd()
-            //.Select(x => x.ToString());
-
             var dictionaryOfEntries = new Dictionary<string, int>();
             var tableBlocks = new List<Block>();
 
@@ -34,7 +27,6 @@ namespace Compressor.Algorithms
 
             foreach (var item in dictionaryOfEntries)
                 tableBlocks.Add(new Block(item.Key, item.Value));
-
 
             tableBlocks = tableBlocks
                 .OrderByDescending(x => x.Frequency)
@@ -112,6 +104,7 @@ namespace Compressor.Algorithms
             {
                 var dictionaryLength = dictionary.Count;
 
+                binWriter.Write(lzwDict); //lzw
                 binWriter.Write(dictionaryLength);
 
                 foreach (var pair in dictionary)
@@ -142,19 +135,6 @@ namespace Compressor.Algorithms
                 binWriter.Write(trashBitsCount);
                 binWriter.Write(bytes);
             }
-
-            //if (_saveAsBinary) SaveCompressedAsBinary();
-            //else SaveCompressedAsString();
-
-            //void SaveCompressedAsBinary()
-            //{
-
-            //}
-
-            //void SaveCompressedAsString()
-            //{
-
-            //}
         }
     }
 }
