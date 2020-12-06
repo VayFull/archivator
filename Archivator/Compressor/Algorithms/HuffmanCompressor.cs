@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -9,12 +10,13 @@ namespace Compressor.Algorithms
 {
     public static class HuffmanCompressor
     {
-        public static void Compress(string fileToCompressPath, string compressedFilePath)
+        public static void Compress(string fileToCompressPath, string compressedFilePath, List<string> inpud)
         {
-            var inputString = File
-                .OpenText(fileToCompressPath)
-                .ReadToEnd()
-                .Select(x => x.ToString());
+            var inputString = inpud;
+                //File
+                //.OpenText(fileToCompressPath)
+                //.ReadToEnd()
+                //.Select(x => x.ToString());
 
             var dictionaryOfEntries = new Dictionary<string, int>();
             var tableBlocks = new List<Block>();
@@ -32,6 +34,15 @@ namespace Compressor.Algorithms
             foreach (var item in dictionaryOfEntries)
                 tableBlocks.Add(new Block(item.Key, item.Value));
 
+            var newTableBlocks = new List<Block>();
+            foreach (var item in tableBlocks)
+            {
+                if (item.Frequency > 3)
+                {
+                    newTableBlocks.Add(item);
+                }
+            }
+
             tableBlocks = tableBlocks
                 .OrderByDescending(x => x.Frequency)
                 .ToList();
@@ -39,6 +50,10 @@ namespace Compressor.Algorithms
             if (tableBlocks.Count > 1)
                 while (true)
                 {
+                    var a = new Stopwatch();
+                    a.Start();
+
+
                     var block1 = tableBlocks
                         .Last(x => !x.Blocked);
                     var block2 = tableBlocks
@@ -52,6 +67,10 @@ namespace Compressor.Algorithms
                     tableBlocks = tableBlocks
                         .OrderByDescending(x => x.Frequency)
                         .ToList();
+
+                    a.Stop();
+                    Console.WriteLine($"{a.ElapsedMilliseconds}         {tableBlocks.Count()}");
+                    a.Reset();
 
                     if (block1.Frequency + block2.Frequency >= inputLength)
                         break;

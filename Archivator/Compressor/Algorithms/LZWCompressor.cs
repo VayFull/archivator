@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 
 namespace Compressor.Algorithms
@@ -48,14 +49,18 @@ namespace Compressor.Algorithms
 
             outputValues.Add(dict[key.ToString()]);
 
-            using (FileStream fs = new FileStream(compressedFilePath, FileMode.Create, FileAccess.Write, FileShare.None))
-            using (BinaryWriter binWriter = new BinaryWriter(fs))
-            {
-                binWriter.Write(dictionary.ToString());
-                binWriter.Write(outputValues.Count);
-                foreach (var compressedValue in outputValues)
-                    binWriter.Write(compressedValue);
-            }
+            //using (FileStream fs = new FileStream(compressedFilePath, FileMode.Create, FileAccess.Write, FileShare.None))
+            //using (BinaryWriter binWriter = new BinaryWriter(fs))
+            //{
+            //    binWriter.Write(dictionary.ToString());
+            //    binWriter.Write(outputValues.Count);
+            //    foreach (var compressedValue in outputValues)
+            //        binWriter.Write(compressedValue);
+            //}
+
+            var hufInput = outputValues.Select(x => x.ToString()).ToList();
+
+            HuffmanCompressor.Compress(fileToCompressPath, compressedFilePath, hufInput);
         }
     }
 }
