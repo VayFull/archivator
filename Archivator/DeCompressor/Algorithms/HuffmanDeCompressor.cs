@@ -10,7 +10,7 @@ namespace DeCompressor.Algorithms
     {
         public static void DeCompress(string fileToDeCompressPath, string deCompressedFilePath)
         {
-            var dictionary = new Dictionary<string, string>(); //Код - символ
+            var dictionary = new Dictionary<string, char>(); //Код - символ
             string encodedString = string.Empty;
             string lzwDict;
 
@@ -24,30 +24,25 @@ namespace DeCompressor.Algorithms
                 {
                     var code = binReader.ReadString();
                     var symbol = binReader.ReadChar();
-                    dictionary.Add(code, symbol.ToString());
+                    dictionary.Add(code, symbol);
                 }
 
                 var trashBitsCount = binReader.ReadInt32();
 
                 var byteString = new StringBuilder();
 
-
                 var bytesArray = binReader.ReadBytes((int)(binReader.BaseStream.Length - binReader.BaseStream.Position));
-
 
                 foreach (var oneByte in bytesArray)
                 {
                     var convertedByteString = new StringBuilder(new string(Convert.ToString(oneByte, 2).Reverse().ToArray()));
 
-                    while (convertedByteString.Length != 8)
-                    {
-                        convertedByteString.Append("0");
-                    }
+                    var convertedShift = 8 - convertedByteString.Length;
 
+                    convertedByteString.Append('0', convertedShift);
 
                     byteString.Append(convertedByteString);
                 }
-
 
                 if (byteString.Length != 0)
                     encodedString = byteString.Remove(byteString.Length - trashBitsCount, trashBitsCount).ToString();
@@ -60,19 +55,16 @@ namespace DeCompressor.Algorithms
             {
                 buffer.Append(item);
 
-                if (dictionary.ContainsKey(buffer.ToString()))
+                var bufferToString = buffer.ToString();
+
+                if (dictionary.ContainsKey(bufferToString))
                 {
-                    decodeResult.Append(dictionary[buffer.ToString()]);
+                    decodeResult.Append(dictionary[bufferToString]);
                     buffer.Clear();
                 }
             }
 
-
-            //File.WriteAllText(deCompressedFilePath, decodeResult.ToString());
-
-
             LZWDeCompressor.DeCompress(deCompressedFilePath, decodeResult.ToString(), lzwDict);
-
         }
     }
 }
