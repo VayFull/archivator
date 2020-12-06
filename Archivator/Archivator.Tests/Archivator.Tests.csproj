@@ -13,7 +13,9 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Archivator\Archivator.csproj" />
+      <ProjectReference Include="..\Archivator.Core\Archivator.Core.csproj" />
+      <ProjectReference Include="..\Compressor\Compressor.csproj" />
+      <ProjectReference Include="..\DeCompressor\DeCompressor.csproj" />
     </ItemGroup>
 
 </Project>
