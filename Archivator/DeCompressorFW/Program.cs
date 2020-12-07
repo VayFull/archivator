@@ -44,7 +44,7 @@ namespace DeCompressorFW
         /// </summary>
         public static void ThrowWrongInput()
         {
-            Console.WriteLine("Введите аргументы в виде: -i путь до файла со сжатым содержимым " +
+            Console.WriteLine("Ошибка: Запустите .exe файл введя аргументы в виде: -i путь до файла со сжатым содержимым " +
                               "-o путь до файла с результатом декодирования");
             Console.ReadLine();
         }

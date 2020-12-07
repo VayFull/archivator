@@ -44,7 +44,7 @@ namespace CompressorFW
         /// </summary>
         public static void ThrowWrongInput()
         {
-            Console.WriteLine("Введите аргументы в виде: -i путь к файлу с содержимым в виде текста " +
+            Console.WriteLine("Ошибка: Запустите .exe файл введя аргументы в виде: -i путь к файлу с содержимым в виде текста " +
                               "-o путь до выходного файла, куда должно быть записано сжатое содержимое");
             Console.ReadLine();
         }
