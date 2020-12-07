@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -22,6 +24,46 @@ namespace Compressor.Algorithms
                 .OpenText(fileToCompressPath)
                 .ReadToEnd(); //исходный текст
 
+            Stopwatch a = new Stopwatch();
+            a.Start();
+            var allWords = inputString
+                .Split(' ');
+
+            var allCodedWords = new List<string>();
+
+            foreach (var singleWord in allWords)
+            {
+                var allRotations = Get(singleWord);
+                var orderedRotations = allRotations
+                    .OrderBy(x => x)
+                    .ToList();
+
+                var lastChars = orderedRotations
+                    .Select(x => x[^1])
+                    .ToArray();
+
+                var coded = new string(lastChars);
+                allCodedWords.Add(coded);
+            }
+
+            foreach (var codedWord in allCodedWords)
+            {
+                var allChars = codedWord
+                    .Distinct()
+                    .ToDictionary(x => x, y => 0);
+
+                foreach (var codedWordChar in codedWord)
+                {
+                    allChars[codedWordChar]++;
+                }
+
+                int sum = 0;
+                
+            }
+
+            a.Stop();
+            Console.WriteLine(a.ElapsedMilliseconds);
+
             var distinctedInputString = inputString.Distinct(); //все уникальные символы текста
             //нужно для заполнения изначального словаря
 
@@ -29,7 +71,7 @@ namespace Compressor.Algorithms
             //для будущей декомпрессии. Пример: abcdefghijklm#. _!?
 
             foreach (var value in distinctedInputString) //тут заполняется динамически заполняемый словарь и 
-            //словарь, сделанный stringBuilder'ом
+                //словарь, сделанный stringBuilder'ом
             {
                 var currentStringValue = value.ToString();
                 dictionary.Append(currentStringValue);
@@ -40,10 +82,13 @@ namespace Compressor.Algorithms
 
             var outputValues = new List<int>(); //удобное хранение для выходных кодов, полученных с помощью алгоритма
 
-            foreach (var inputChar in inputString) //тут сделан сам алгоритм (проход по каждому символу исходного текста)
+            foreach (var inputChar in inputString
+            ) //тут сделан сам алгоритм (проход по каждому символу исходного текста)
             {
-                var keyToString = key.ToString(); //получаем текущий ключ (пустой или ключ, который был на предыдущем шаге)
-                var newKey = keyToString + inputChar; //создаём новый ключ (путём добавления символа на текущей итерации)
+                var keyToString =
+                    key.ToString(); //получаем текущий ключ (пустой или ключ, который был на предыдущем шаге)
+                var newKey =
+                    keyToString + inputChar; //создаём новый ключ (путём добавления символа на текущей итерации)
                 if (dict.ContainsKey(newKey)) //если в динамическом словаре уже содержится новый ключ
                 {
                     key.Append(inputChar); //тогда добавляем к ключу новый символ
@@ -66,10 +111,32 @@ namespace Compressor.Algorithms
             hufInput.Append(string.Join(" ", outputValues));
 
             HuffmanCompressor.Compress(compressedFilePath, hufInput //запуск алгоритма сжатия по Хаффману
-                .ToString()
-                .Select(x => x.ToString())
-                .ToList(), 
+                    .ToString()
+                    .Select(x => x.ToString())
+                    .ToList(),
                 dictionary.ToString());
+        }
+
+        static List<string> Get(string inputWord)
+        {
+            var result = new List<string>();
+            result.Add(inputWord);
+
+            var buffer = new StringBuilder();
+
+            for (int i = 0; i < inputWord.Length - 1; i++)
+            {
+                var lastChar = inputWord.Last();
+                buffer.Append(lastChar);
+                buffer.Append(inputWord.Remove(inputWord.Length - 1));
+
+                result.Add(buffer.ToString());
+
+                inputWord = buffer.ToString();
+                buffer.Clear();
+            }
+
+            return result;
         }
     }
 }
